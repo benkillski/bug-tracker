@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -12,20 +11,7 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="tableView" prefHeight="571.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                      <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
-                      <TableColumn prefWidth="75.0" text="Priority" />
-                        <TableColumn prefWidth="100.0" text="Attachments" />
-                        <TableColumn prefWidth="75.0" text="Status" />
-                        <TableColumn prefWidth="75.0" text="Assigned to" />
-                        <TableColumn prefWidth="75.0" text="Description" />
-                        <TableColumn prefWidth="100.0" text="Opened date" />
-                        <TableColumn prefWidth="75.0" text="Days old" />
-                        <TableColumn prefWidth="75.0" text="Duplicates?" />
-                        <TableColumn prefWidth="75.0" text="Bug Source" />
-                    </columns>
-                  </TableView>
+                  <TableView fx:id="bugsAndIssuesTable" prefHeight="571.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children></AnchorPane>
       </content>
     </Tab>

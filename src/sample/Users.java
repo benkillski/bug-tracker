@@ -37,4 +37,32 @@ public class Users
     {
         return name.get();
     }
+
+    public int getInprogressIssues() {
+        return inprogressIssues.get();
+    }
+
+    public int getCompletedIssues() {
+        return completedIssues.get();
+    }
+
+    public int getClosedIssues() {
+        return closedIssues.get();
+    }
+
+    public int getTotalAssigned() {
+        return totalAssigned.get();
+    }
+
+    public int getAssignedReports() {
+        return assignedReports.get();
+    }
+
+    public int getTotalCreated() {
+        return totalCreated.get();
+    }
+
+    public int getCreatedReports() {
+        return createdReports.get();
+    }
 }

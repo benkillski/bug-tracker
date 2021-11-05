@@ -49,13 +49,13 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Button>
-      <Label fx:id="confirmPasswordLabel" layoutX="300.0" layoutY="250.0" textFill="RED" />
+      <Label fx:id="confirmPasswordLabel" layoutX="304.0" layoutY="273.0" prefHeight="17.0" prefWidth="297.0" textFill="RED" />
       <Label layoutX="135.0" layoutY="179.0" text="Username">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Button fx:id="cancelButton" layoutX="137.0" layoutY="363.0" mnemonicParsing="false" onAction="#registerButtonOnAction" prefHeight="25.0" prefWidth="297.0" style="-fx-background-color: navy;" text="Cancel" textFill="WHITE">
+      <Button fx:id="cancelButton" layoutX="137.0" layoutY="363.0" mnemonicParsing="false" onAction="#cancelButtonOnAction" prefHeight="25.0" prefWidth="297.0" style="-fx-background-color: navy;" text="Cancel" textFill="WHITE">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
