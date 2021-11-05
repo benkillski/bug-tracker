@@ -41,17 +41,18 @@
             </Text>
             <TextField fx:id="username" layoutX="107.0" layoutY="133.0" />
             <PasswordField fx:id="password" layoutX="107.0" layoutY="188.0" />
-            <Button layoutX="54.0" layoutY="258.0" mnemonicParsing="false" onAction="#userLogin" prefHeight="25.0" prefWidth="178.0" style="-fx-background-color: navy;" text="Login" textFill="WHITE">
+            <Button layoutX="50.0" layoutY="288.0" mnemonicParsing="false" onAction="#userLogin" prefHeight="25.0" prefWidth="178.0" style="-fx-background-color: navy;" text="Login" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Button>
-            <Button layoutX="54.0" layoutY="317.0" mnemonicParsing="false" onAction="#exitLogin" prefHeight="25.0" prefWidth="178.0" style="-fx-background-color: navy;" text="Cancel" textFill="WHITE">
+            <Button layoutX="50.0" layoutY="335.0" mnemonicParsing="false" onAction="#exitLogin" prefHeight="25.0" prefWidth="178.0" style="-fx-background-color: navy;" text="Cancel" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Button>
             <Label fx:id="loginError" alignment="CENTER" layoutX="12.0" layoutY="101.0" prefHeight="17.0" prefWidth="254.0" textFill="RED" />
+            <Button layoutX="83.0" layoutY="245.0" mnemonicParsing="false" onAction="#createAccountForm" style="-fx-background-color: transparent;" text="Create an account" />
          </children>
       </AnchorPane>
    </right>

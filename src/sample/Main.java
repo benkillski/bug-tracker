@@ -19,7 +19,7 @@ public class Main extends Application
         stg = primaryStage;
         primaryStage.setResizable(false);
         Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
     }
@@ -28,9 +28,8 @@ public class Main extends Application
     {
         Parent pane = FXMLLoader.load(getClass().getResource(fxmlFile));
         stg.getScene().setRoot(pane);
-        stg.initStyle(StageStyle.DECORATED);
-        stg.setScene(new Scene(pane, 600, 400));
-        stg.show();
+        stg.setResizable(true);
+        stg.setMaximized(true);
     }
 
 

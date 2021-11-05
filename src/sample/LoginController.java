@@ -3,10 +3,14 @@ package sample;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
@@ -35,7 +39,7 @@ public class LoginController
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
 
-        String verifyLogin = "SELECT count(1) FROM users WHERE username = '" + username.getText() + "' AND password = '" + password.getText() + "';";
+        String verifyLogin = "SELECT count(1) FROM users WHERE admin_id = '" + username.getText() + "' AND password = '" + password.getText() + "';";
 
         try
         {
@@ -57,6 +61,25 @@ public class LoginController
                     loginError.setText("Invalid login credentials!");
                 }
             }
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            e.getCause();
+            System.out.println("ERROR LOADING DATA!");
+        }
+    }
+
+    public void createAccountForm()
+    {
+        try
+        {
+            Parent root = FXMLLoader.load(getClass().getResource("register.fxml"));
+            Stage registerStage = new Stage();
+            registerStage.initStyle(StageStyle.DECORATED);
+            registerStage.setScene(new Scene(root, 600, 400));
+            registerStage.show();
         }
         catch(Exception e)
         {
