@@ -5,15 +5,29 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-public class Main extends Application {
+import java.io.IOException;
+
+public class Main extends Application
+{
+    private static Stage stg;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+    public void start(Stage primaryStage) throws Exception
+    {
+        stg = primaryStage;
+        primaryStage.setResizable(false);
+        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
+    }
+
+    public void changeScene(String fxmlFile) throws IOException
+    {
+        Parent pane = FXMLLoader.load(getClass().getResource(fxmlFile));
+        stg.getScene().setRoot(pane);
     }
 
 
