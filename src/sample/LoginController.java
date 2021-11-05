@@ -7,8 +7,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.sql.*;
 
 public class LoginController
 {
@@ -29,19 +31,37 @@ public class LoginController
     public void checkLogin() throws IOException
     {
         Main m = new Main();
-        if(username.getText().toString().equals("username") && password.getText().toString().equals("password"))
-        {
-            loginError.setText("Login Success!");
 
-            m.changeScene("bugTracker.fxml");   //Change to application scene
-        }
-        else if(username.getText().isEmpty() && password.getText().isEmpty())
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.getConnection();
+
+        String verifyLogin = "SELECT count(1) FROM users WHERE username = '" + username.getText() + "' AND password = '" + password.getText() + "';";
+
+        try
         {
-            loginError.setText("Please enter your login credentials");
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(verifyLogin);
+
+            while(queryResult.next())
+            {
+                if(queryResult.getInt(1) == 1)
+                {
+                    m.changeScene("bugTracker.fxml");   //Change to application scene
+                }
+                else if(username.getText().isEmpty() && password.getText().isEmpty())
+                {
+                    loginError.setText("Please enter a username and password!");
+                }
+                else
+                {
+                    loginError.setText("Invalid login credentials!");
+                }
+            }
         }
-        else
+        catch(Exception e)
         {
-            loginError.setText("Wrong username or password!");
+            e.printStackTrace();
+            e.getCause();
         }
     }
 

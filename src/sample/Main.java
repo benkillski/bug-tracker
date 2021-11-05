@@ -28,6 +28,9 @@ public class Main extends Application
     {
         Parent pane = FXMLLoader.load(getClass().getResource(fxmlFile));
         stg.getScene().setRoot(pane);
+        stg.initStyle(StageStyle.DECORATED);
+        stg.setScene(new Scene(pane, 600, 400));
+        stg.show();
     }
 
 
