@@ -2,12 +2,19 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -30,7 +37,8 @@ public class BugTrackerController implements Initializable
     }
 
     //Adds data to the Bugs and Issues table
-    private void initBugsAndIssuesTable() {
+    private void initBugsAndIssuesTable()
+    {
         TableColumn bugTitle = new TableColumn("Name");
         TableColumn priority = new TableColumn("Priority");
         TableColumn attachments = new TableColumn("Attachments");
@@ -48,6 +56,7 @@ public class BugTrackerController implements Initializable
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
 
+        //Query to retrieve data from bug_reports
         String selectAllBugReports = "SELECT " +
                                         "name, " +
                                         "priority, " +
@@ -59,10 +68,13 @@ public class BugTrackerController implements Initializable
                                         "DATEDIFF(NOW(), opened_date), " +
                                         "duplicates, " +
                                         "bug_source, " +
-                                        "created_by " +
-                                    "FROM bug_reports";
+                                        "CONCAT(f_name, ' ', l_name) " +
+                                    "FROM bug_reports " +
+                                    "INNER JOIN users " +
+                                        "ON bug_reports.created_by = users.admin_id;";
 
-        try {
+        try
+        {
             Statement statement = connectDB.createStatement();
             ResultSet queryResult = statement.executeQuery(selectAllBugReports);
 
@@ -80,7 +92,7 @@ public class BugTrackerController implements Initializable
                                             queryResult.getInt("DATEDIFF(NOW(), opened_date)"),
                                             queryResult.getString("duplicates"),
                                             queryResult.getString("bug_source"),
-                                            queryResult.getInt("created_by")
+                                            queryResult.getString("CONCAT(f_name, ' ', l_name)")
                         )
                 );
 
@@ -95,7 +107,7 @@ public class BugTrackerController implements Initializable
                 daysOld.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("daysOld"));
                 duplicates.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("duplicates"));
                 bugSource.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("bugSource"));
-                createdBy.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("createdBy"));
+                createdBy.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("createdBy"));
 
                 //Add data inside of table
                 bugsAndIssuesTable.setItems(data);
@@ -190,5 +202,20 @@ public class BugTrackerController implements Initializable
     private void initFeaturesTable()
     {
 
+    }
+
+    //Creates a pop up window to create a bug report
+    public void reportBugOnAction(ActionEvent event) throws IOException
+    {
+        Stage popupWindow = new Stage();
+
+        popupWindow.initModality(Modality.APPLICATION_MODAL);
+        popupWindow.setResizable(false);
+        popupWindow.setTitle("Report Bug");
+
+        Parent root = FXMLLoader.load(getClass().getResource("createBugReport.fxml"));
+        Scene scene = new Scene(root);
+        popupWindow.setScene(scene);
+        popupWindow.show();
     }
 }

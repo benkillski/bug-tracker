@@ -15,9 +15,9 @@ public class BugsAndIssues
     private SimpleIntegerProperty daysOld;
     private SimpleStringProperty duplicates;
     private SimpleStringProperty bugSource;
-    private SimpleIntegerProperty createdBy;
+    private SimpleStringProperty createdBy;
 
-    public BugsAndIssues(String bugTitle, String priority, String attachments, String status, int assignedTo, String description, String openedDate, int daysOld, String duplicates, String bugSource, int createdBy)
+    public BugsAndIssues(String bugTitle, String priority, String attachments, String status, int assignedTo, String description, String openedDate, int daysOld, String duplicates, String bugSource, String createdBy)
     {
         this.bugTitle = new SimpleStringProperty(bugTitle);
         this. priority = new SimpleStringProperty(priority);
@@ -29,7 +29,7 @@ public class BugsAndIssues
         this.daysOld = new SimpleIntegerProperty(daysOld);
         this.duplicates = new SimpleStringProperty(duplicates);
         this.bugSource = new SimpleStringProperty(bugSource);
-        this.createdBy = new SimpleIntegerProperty(createdBy);
+        this.createdBy = new SimpleStringProperty(createdBy);
     }
 
     public String getBugTitle()
@@ -82,7 +82,7 @@ public class BugsAndIssues
         return bugSource.get();
     }
 
-    public int getCreatedBy()
+    public String getCreatedBy()
     {
         return createdBy.get();
     }

@@ -19,8 +19,6 @@ import java.sql.*;
 public class LoginController
 {
     @FXML
-    private Button loginButton;
-    @FXML
     private Label loginError;
     @FXML
     private TextField username;
@@ -32,7 +30,7 @@ public class LoginController
         checkLogin();
     }
 
-    public void checkLogin() throws IOException
+    public void checkLogin()
     {
         Main m = new Main();
 
@@ -67,7 +65,6 @@ public class LoginController
         {
             e.printStackTrace();
             e.getCause();
-            System.out.println("ERROR LOADING DATA!");
         }
     }
 
