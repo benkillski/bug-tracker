@@ -18,6 +18,7 @@ import java.sql.*;
 
 public class LoginController
 {
+    public static int currentUser;
     @FXML
     private Label loginError;
     @FXML
@@ -37,7 +38,7 @@ public class LoginController
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
 
-        String verifyLogin = "SELECT count(1) FROM users WHERE username = '" + username.getText() + "' AND password = '" + password.getText() + "';";
+        String verifyLogin = "SELECT count(1), admin_id FROM users WHERE username = '" + username.getText() + "' AND password = '" + password.getText() + "';";
 
         try
         {
@@ -48,6 +49,7 @@ public class LoginController
             {
                 if(queryResult.getInt(1) == 1)
                 {
+                    currentUser = queryResult.getInt("admin_id");
                     m.changeScene("bugTracker.fxml");   //Change to application scene
                 }
                 else if(username.getText().isEmpty() && password.getText().isEmpty())

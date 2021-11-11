@@ -62,16 +62,18 @@ public class BugTrackerController implements Initializable
                                         "priority, " +
                                         "attachments, " +
                                         "status, " +
-                                        "assigned_to, " +
+                                        "CONCAT(b.f_name, ' ', b.l_name), " +
                                         "description, " +
                                         "opened_date, " +
                                         "DATEDIFF(NOW(), opened_date), " +
                                         "duplicates, " +
                                         "bug_source, " +
-                                        "CONCAT(f_name, ' ', l_name) " +
+                                        "CONCAT(a.f_name, ' ', a.l_name) " +
                                     "FROM bug_reports " +
-                                    "INNER JOIN users " +
-                                        "ON bug_reports.created_by = users.admin_id;";
+                                    "INNER JOIN users AS a " +
+                                        "ON a.admin_id = bug_reports.created_by " +
+                                    "INNER JOIN users AS b " +
+                                        "ON b.admin_id = bug_reports.assigned_to;";
 
         try
         {
@@ -86,13 +88,13 @@ public class BugTrackerController implements Initializable
                                             queryResult.getString("priority"),
                                             queryResult.getString("attachments"),
                                             queryResult.getString("status"),
-                                            queryResult.getInt("assigned_to"),
+                                            queryResult.getString("CONCAT(b.f_name, ' ', b.l_name)"),
                                             queryResult.getString("description"),
                                             queryResult.getString("opened_date"),
                                             queryResult.getInt("DATEDIFF(NOW(), opened_date)"),
                                             queryResult.getString("duplicates"),
                                             queryResult.getString("bug_source"),
-                                            queryResult.getString("CONCAT(f_name, ' ', l_name)")
+                                            queryResult.getString("CONCAT(a.f_name, ' ', a.l_name)")
                         )
                 );
 
@@ -117,7 +119,6 @@ public class BugTrackerController implements Initializable
         {
             e.printStackTrace();
             e.getCause();
-            System.out.println("ERROR LOADING DATA!");
         }
     }
 
@@ -194,7 +195,6 @@ public class BugTrackerController implements Initializable
         {
             e.printStackTrace();
             e.getCause();
-            System.out.println("ERROR LOADING DATA!");
         }
     }
 
@@ -217,5 +217,11 @@ public class BugTrackerController implements Initializable
         Scene scene = new Scene(root);
         popupWindow.setScene(scene);
         popupWindow.show();
+    }
+
+    public void updateTables()
+    {
+        teamMemberTable.refresh();
+        bugsAndIssuesTable.refresh();
     }
 }

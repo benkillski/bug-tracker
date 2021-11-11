@@ -9,7 +9,7 @@ public class BugsAndIssues
     private SimpleStringProperty priority;
     private SimpleStringProperty attachments;   //TODO: Changes type to hold pictures
     private SimpleStringProperty status;
-    private SimpleIntegerProperty assignedTo;
+    private SimpleStringProperty assignedTo;
     private SimpleStringProperty description;
     private SimpleStringProperty openedDate;
     private SimpleIntegerProperty daysOld;
@@ -17,13 +17,13 @@ public class BugsAndIssues
     private SimpleStringProperty bugSource;
     private SimpleStringProperty createdBy;
 
-    public BugsAndIssues(String bugTitle, String priority, String attachments, String status, int assignedTo, String description, String openedDate, int daysOld, String duplicates, String bugSource, String createdBy)
+    public BugsAndIssues(String bugTitle, String priority, String attachments, String status, String assignedTo, String description, String openedDate, int daysOld, String duplicates, String bugSource, String createdBy)
     {
         this.bugTitle = new SimpleStringProperty(bugTitle);
         this. priority = new SimpleStringProperty(priority);
         this.attachments = new SimpleStringProperty(attachments);
         this.status = new SimpleStringProperty(status);
-        this.assignedTo = new SimpleIntegerProperty(assignedTo);
+        this.assignedTo = new SimpleStringProperty(assignedTo);
         this.description = new SimpleStringProperty(description);
         this.openedDate = new SimpleStringProperty(openedDate);
         this.daysOld = new SimpleIntegerProperty(daysOld);
@@ -52,7 +52,7 @@ public class BugsAndIssues
         return status.get();
     }
 
-    public int getAssignedTo()
+    public String getAssignedTo()
     {
         return assignedTo.get();
     }
