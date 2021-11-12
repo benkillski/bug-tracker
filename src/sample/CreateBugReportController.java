@@ -1,5 +1,6 @@
 package sample;
 
+import com.mysql.cj.log.Log;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -63,7 +64,7 @@ public class CreateBugReportController implements Initializable
     {
         assignToComboBox.getItems().removeAll(assignToComboBox.getItems());
 
-        String selectAllUsersNames = "SELECT CONCAT(f_name, ' ', l_name) FROM users";
+        String selectAllUsersNames = "SELECT CONCAT(f_name, ' ', l_name) FROM users WHERE admin_id != " + LoginController.currentUser;
 
         try
         {
@@ -106,7 +107,7 @@ public class CreateBugReportController implements Initializable
                 statement.executeUpdate(insertReportIntoDB);
                 //TODO: Refresh tables
                 Stage stage = (Stage) createReportButton.getScene().getWindow();
-                stage.close();//TODO: Close window
+                stage.close();
             }
         }
         catch (Exception e)
