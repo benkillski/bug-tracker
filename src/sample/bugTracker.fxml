@@ -17,7 +17,11 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
                <graphic>
-                  <Label text="Dashboard" />
+                  <Label text="Dashboard">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </graphic>
             </Tab>
             <Tab>
@@ -29,7 +33,11 @@
                   </AnchorPane>
                </content>
                <graphic>
-                  <Label text="Bugs and Issues" />
+                  <Label text="Bugs and Issues">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </graphic>
             </Tab>
             <Tab>
@@ -37,7 +45,11 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
                <graphic>
-                  <Label text="Your Reports" />
+                  <Label text="Your Reports">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </graphic>
             </Tab>
             <Tab>
@@ -49,7 +61,11 @@
                   </AnchorPane>
                </content>
                <graphic>
-                  <Label text="Team Members" />
+                  <Label text="Team Members">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </graphic>
             </Tab>
             <Tab>
@@ -57,7 +73,11 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
                <graphic>
-                  <Label text="Profile" />
+                  <Label text="Profile">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </graphic>
             </Tab>
          </tabs>

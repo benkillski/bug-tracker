@@ -144,13 +144,13 @@ public class BugTrackerController implements Initializable
         String selectAllUsernames = "SELECT " +
                                         "admin_id, " +
                                         "CONCAT(f_name, ' ', l_name), " +
-                                        "inprogress_issues, " +
-                                        "completed_issues, " +
-                                        "closed_issues, " +
+                                        //"inprogress_issues, " +
+                                        //"completed_issues, " +
+                                        //"closed_issues, " +
                                         "total_assigned, " +
-                                        "assigned_reports, " +
-                                        "total_created, " +
-                                        "created_reports " +
+                                        //"assigned_reports, " +
+                                        "total_created " +
+                                        //"created_reports " +
                                     "FROM users;";
 
         try
@@ -164,13 +164,8 @@ public class BugTrackerController implements Initializable
             {
                 data.add(new Users( queryResult.getInt("admin_id"),
                                     queryResult.getString("CONCAT(f_name, ' ', l_name)"),
-                                    queryResult.getInt("inprogress_issues"),
-                                    queryResult.getInt("completed_issues"),
-                                    queryResult.getInt("closed_issues"),
                                     queryResult.getInt("total_assigned"),
-                                    queryResult.getInt("assigned_reports"),
-                                    queryResult.getInt("total_created"),
-                                    queryResult.getInt("created_reports")
+                                    queryResult.getInt("total_created")
                                     )
                 );
             }
@@ -178,14 +173,8 @@ public class BugTrackerController implements Initializable
             //Associate data with columns
             id.setCellValueFactory(new PropertyValueFactory<Users, Integer>("id"));
             name.setCellValueFactory(new PropertyValueFactory<Users, String>("name"));
-            inprogressIssues.setCellValueFactory(new PropertyValueFactory<Users, Integer>("inprogressIssues"));
-            completedIssues.setCellValueFactory(new PropertyValueFactory<Users, Integer>("completedIssues"));
-            closedIssues.setCellValueFactory(new PropertyValueFactory<Users, Integer>("closedIssues"));
             totalAssigned.setCellValueFactory(new PropertyValueFactory<Users, Integer>("totalAssigned"));
-            assignedReports.setCellValueFactory(new PropertyValueFactory<Users, Integer>("assignedReports"));
             totalCreated.setCellValueFactory(new PropertyValueFactory<Users, Integer>("totalCreated"));
-            createdReports.setCellValueFactory(new PropertyValueFactory<Users, Integer>("createdReports"));
-
 
             //Add data inside of table
             teamMemberTable.setItems(data);

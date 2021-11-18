@@ -1,20 +1,10 @@
 package sample;
 
-import com.mysql.cj.log.Log;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.stage.Modality;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,6 +27,8 @@ public class CreateBugReportController implements Initializable
     private TextArea bugSourceTextArea;
     @FXML
     private Button createReportButton;
+    @FXML
+    private Label emptyFieldsErrorLabel;
 
     DatabaseConnection connectNow;
     Connection connectDB;
@@ -86,26 +78,43 @@ public class CreateBugReportController implements Initializable
     //Adds bug report data into the database
     public void createBugReportOnAction()
     {
-        String insertReportIntoDB = "INSERT INTO bug_reports (name, priority, status, assigned_to, description, bug_source, created_by) " +
-                                    "VALUES ('" + reportNameTextField.getText() + "', " +
-                                    "'" + priorityComboBox.getValue().toString() + "', " +
-                                    "\"" + statusComboBox.getValue().toString() + "\", " +
-                                    "(SELECT admin_id FROM users WHERE CONCAT(f_name, ' ', l_name) = '" + assignToComboBox.getValue().toString() + "'), " +
-                                    "'" + descriptionTextArea.getText() + "', " +
-                                    "'" + bugSourceTextArea.getText() + "', " +
-                                    LoginController.currentUser + ");";
-
         try
         {
             if (reportNameTextField.getText().isEmpty() || priorityComboBox.getValue().equals(null) || assignToComboBox.getValue().equals(null))
             {
                 //TODO: Display "Report title, priority, and assigned to fields cannot be empty!" error
+                emptyFieldsErrorLabel.setText("Report title, priority, and assign to fields cannot be empty!");
             }
             else
             {
+                String insertReportIntoDB = "INSERT INTO bug_reports (name, priority, status, assigned_to, description, bug_source, created_by) " +
+                        "VALUES ('" + reportNameTextField.getText() + "', " +
+                        "'" + priorityComboBox.getValue().toString() + "', " +
+                        "'In-progress', " +
+                        "(SELECT admin_id FROM users WHERE CONCAT(f_name, ' ', l_name) = '" + assignToComboBox.getValue().toString() + "'), " +
+                        "'" + descriptionTextArea.getText() + "', " +
+                        "'" + bugSourceTextArea.getText() + "', " +
+                        LoginController.currentUser + ");";
+
+                String insertIntoInprogress = "INSERT INTO inprogress_issues (report_title, assigned_to) " +
+                                              "VALUES ('" + reportNameTextField.getText() + "', (SELECT admin_id FROM users WHERE CONCAT(f_name, ' ', l_name) = '" + assignToComboBox.getValue().toString() +"'));";
+
+                String insertIntoAssigned = "INSERT INTO assigned_reports (report_title, assigned_to) " +
+                                            "VALUES ('" + reportNameTextField.getText() + "', (SELECT admin_id FROM users WHERE CONCAT(f_name, ' ', l_name) = '" + assignToComboBox.getValue().toString() +"'));";
+
+                String insertIntoCreated = "INSERT INTO created_reports (report_title, assigned_to) " +
+                                           "VALUES ('" + reportNameTextField.getText() + "', " + LoginController.currentUser + ");";
+
+                String updateUsersTotalAssigned = "UPDATE users SET total_assigned = total_assigned + 1 WHERE CONCAT(f_name, ' ', l_name) = '" + assignToComboBox.getValue().toString() + "';";
+                String updateUsersTotalCreated = "UPDATE users SET total_created = total_created + 1 WHERE admin_id = " + LoginController.currentUser + ";";
+                
                 Statement statement = connectDB.createStatement();
                 statement.executeUpdate(insertReportIntoDB);
-                //TODO: Refresh tables
+                statement.executeUpdate(insertIntoInprogress);
+                statement.executeUpdate(insertIntoAssigned);
+                statement.executeUpdate(insertIntoCreated);
+                statement.executeUpdate(updateUsersTotalAssigned);
+                statement.executeUpdate(updateUsersTotalCreated);
                 Stage stage = (Stage) createReportButton.getScene().getWindow();
                 stage.close();
             }
