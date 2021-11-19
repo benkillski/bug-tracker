@@ -82,7 +82,6 @@ public class CreateBugReportController implements Initializable
         {
             if (reportNameTextField.getText().isEmpty() || priorityComboBox.getValue().equals(null) || assignToComboBox.getValue().equals(null))
             {
-                //TODO: Display "Report title, priority, and assigned to fields cannot be empty!" error
                 emptyFieldsErrorLabel.setText("Report title, priority, and assign to fields cannot be empty!");
             }
             else

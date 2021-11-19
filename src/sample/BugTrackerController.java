@@ -8,8 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,16 +27,31 @@ public class BugTrackerController implements Initializable
     private TableView teamMemberTable;
     @FXML
     private TableView bugsAndIssuesTable;
+    @FXML
+    private TextField firstNameTextField;
+    @FXML
+    private TextField lastNameTextField;
+    @FXML
+    private Label idNumberLabel;
+    @FXML
+    private TextField usernameTextField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private PasswordField confirmPasswordField;
+    @FXML
+    private Label profileInfoErrorMessage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         initBugsAndIssuesTable();
         initTeamMembersTable();
+        initProfileTab();
     }
 
     //Adds data to the Bugs and Issues table
-    private void initBugsAndIssuesTable()
+    public void initBugsAndIssuesTable()
     {
         TableColumn bugTitle = new TableColumn("Name");
         TableColumn priority = new TableColumn("Priority");
@@ -123,7 +137,7 @@ public class BugTrackerController implements Initializable
     }
 
     //Adds data to the Team Members Table
-    private void initTeamMembersTable()
+    public void initTeamMembersTable()
     {
         TableColumn id = new TableColumn("ID");
         TableColumn name = new TableColumn("Name");
@@ -187,10 +201,33 @@ public class BugTrackerController implements Initializable
         }
     }
 
-    //Adds data to the features table
-    private void initFeaturesTable()
+    public void initProfileTab()
     {
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.getConnection();
 
+        String selectCurrentUserInfo = "SELECT f_name, l_name, username, password FROM users WHERE admin_id = " + LoginController.currentUser + ";";
+
+        try
+        {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(selectCurrentUserInfo);
+
+            if(queryResult.next())
+            {
+                firstNameTextField.setText(queryResult.getString("f_name"));
+                lastNameTextField.setText(queryResult.getString("l_name"));
+                idNumberLabel.setText(Integer.toString(LoginController.currentUser));
+                usernameTextField.setText(queryResult.getString("username"));
+                passwordField.setText(queryResult.getString("password"));
+                confirmPasswordField.setText(queryResult.getString("password"));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            e.getCause();
+        }
     }
 
     //Creates a pop up window to create a bug report
@@ -206,6 +243,36 @@ public class BugTrackerController implements Initializable
         Scene scene = new Scene(root);
         popupWindow.setScene(scene);
         popupWindow.show();
+    }
+
+    //Saves profile changes into database
+    public void saveProfileChangesOnActions(ActionEvent event) throws IOException
+    {
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.getConnection();
+
+        String updateUserData = "UPDATE users " +
+                                "SET f_name = '" + firstNameTextField.getText() + "', l_name = '" + lastNameTextField.getText() + "', password = '" + passwordField.getText() + "' " +
+                                "WHERE admin_id = " + LoginController.currentUser + ";";
+
+        try
+        {
+            Statement statement = connectDB.createStatement();
+
+            if (passwordField.getText().equals(confirmPasswordField.getText()) && !firstNameTextField.getText().isEmpty() && !lastNameTextField.getText().isEmpty() && !passwordField.getText().isEmpty())
+            {
+                statement.executeUpdate(updateUserData);
+            }
+            else
+            {
+                profileInfoErrorMessage.setText("Firstname, Lastname, Username, and Password fields cannot be blank! Password fields must also match!");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            e.getCause();
+        }
     }
 
     public void updateTables()
