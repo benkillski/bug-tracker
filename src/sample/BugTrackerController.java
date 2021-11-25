@@ -67,6 +67,7 @@ public class BugTrackerController implements Initializable
     //Adds data to the Bugs and Issues table
     public void initBugsAndIssuesTable()
     {
+        TableColumn reportId = new TableColumn("ID");
         TableColumn bugTitle = new TableColumn("Name");
         TableColumn priority = new TableColumn("Priority");
         TableColumn attachments = new TableColumn("Attachments");
@@ -78,26 +79,28 @@ public class BugTrackerController implements Initializable
         TableColumn duplicates = new TableColumn("Duplicates?");
         TableColumn bugSource = new TableColumn("Bug source");
         TableColumn createdBy = new TableColumn("Created by");
-        bugsAndIssuesTable.getColumns().addAll(bugTitle, priority, attachments, status, assignedTo, description, openedDate, daysOld, duplicates, bugSource, createdBy);
+        bugsAndIssuesTable.getColumns().addAll(reportId, bugTitle, priority, attachments, status, assignedTo, description, openedDate, daysOld, duplicates, bugSource, createdBy);
 
         //Query to retrieve data from bug_reports
         String selectAllBugReports = "SELECT " +
+                                        "id, " +
                                         "name, " +
                                         "priority, " +
                                         "attachments, " +
                                         "status, " +
-                                        "CONCAT(b.f_name, ' ', b.l_name), " +
+                                        "CONCAT(b.f_name, ' ', b.l_name)  AS assigned, " +
                                         "description, " +
                                         "opened_date, " +
-                                        "DATEDIFF(NOW(), opened_date), " +
+                                        "DATEDIFF(NOW(), opened_date) AS days_old, " +
                                         "duplicates, " +
                                         "bug_source, " +
-                                        "CONCAT(a.f_name, ' ', a.l_name) " +
+                                        "CONCAT(a.f_name, ' ', a.l_name) AS creator " +
                                     "FROM bug_reports " +
                                     "INNER JOIN users AS a " +
                                         "ON a.admin_id = bug_reports.created_by " +
                                     "INNER JOIN users AS b " +
-                                        "ON b.admin_id = bug_reports.assigned_to;";
+                                        "ON b.admin_id = bug_reports.assigned_to " +
+                                    "ORDER BY id;";
 
         try
         {
@@ -108,31 +111,33 @@ public class BugTrackerController implements Initializable
             bugData = FXCollections.observableArrayList();
             while (queryResult.next())
             {
-                bugData.add(new BugsAndIssues( queryResult.getString("name"),
+                bugData.add(new BugsAndIssues( queryResult.getInt("id"),
+                                            queryResult.getString("name"),
                                             queryResult.getString("priority"),
                                             queryResult.getString("attachments"),
                                             queryResult.getString("status"),
-                                            queryResult.getString("CONCAT(b.f_name, ' ', b.l_name)"),
+                                            queryResult.getString("assigned"),
                                             queryResult.getString("description"),
                                             queryResult.getString("opened_date"),
-                                            queryResult.getInt("DATEDIFF(NOW(), opened_date)"),
+                                            queryResult.getInt("days_old"),
                                             queryResult.getString("duplicates"),
                                             queryResult.getString("bug_source"),
-                                            queryResult.getString("CONCAT(a.f_name, ' ', a.l_name)")
+                                            queryResult.getString("creator")
                         )
                 );
 
                 //Associate data with columns
-                bugTitle.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("bugTitle"));
-                priority.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("priority"));
-                attachments.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("attachments"));
-                status.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("status"));
-                assignedTo.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("assignedTo"));
-                description.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("description"));
-                openedDate.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("openedDate"));
+                reportId.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("id"));
+                bugTitle.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("bugTitle"));
+                priority.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("priority"));
+                attachments.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("attachments"));
+                status.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("status"));
+                assignedTo.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("assignedTo"));
+                description.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("description"));
+                openedDate.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("openedDate"));
                 daysOld.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("daysOld"));
-                duplicates.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("duplicates"));
-                bugSource.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, Integer>("bugSource"));
+                duplicates.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("duplicates"));
+                bugSource.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("bugSource"));
                 createdBy.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("createdBy"));
 
                 //Add data inside of table
@@ -159,7 +164,8 @@ public class BugTrackerController implements Initializable
         TableColumn daysOld = new TableColumn("Days old");
         TableColumn duplicates = new TableColumn("Duplicates?");
         TableColumn bugSource = new TableColumn("Bug source");
-        yourReportsTable.getColumns().addAll(reportId, reportName, priority, attachments, status, description, openedDate, daysOld, duplicates, bugSource);
+        TableColumn createdBy = new TableColumn("Created by");
+        yourReportsTable.getColumns().addAll(reportId, reportName, priority, attachments, status, description, openedDate, daysOld, duplicates, bugSource, createdBy);
 
         //Listener to enable/disable the Change status button based on if a row has been selected or not
         yourReportsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -186,11 +192,12 @@ public class BugTrackerController implements Initializable
                                         "DATEDIFF(NOW(), opened_date) AS days_old, " +
                                         "duplicates, " +
                                         "bug_source, " +
-                                        "CONCAT(f_name, ' ', l_name) AS created_by " +
+                                        "CONCAT(f_name, ' ', l_name) AS creator " +
                                     "FROM bug_reports " +
                                     "INNER JOIN users " +
                                         "ON users.admin_id = bug_reports.created_by " +
-                                    "WHERE admin_id = " + LoginController.currentUser + ";";
+                                    "WHERE assigned_to = " + LoginController.currentUser +
+                                    " ORDER BY opened_date;";
 
         try
         {
@@ -210,7 +217,8 @@ public class BugTrackerController implements Initializable
                                 queryResult.getString("opened_date"),
                                 queryResult.getInt("days_old"),
                                 queryResult.getString("duplicates"),
-                                queryResult.getString("bug_source")
+                                queryResult.getString("bug_source"),
+                                queryResult.getString("creator")
                         )
                 );
             }
@@ -226,6 +234,7 @@ public class BugTrackerController implements Initializable
             daysOld.setCellValueFactory(new PropertyValueFactory<YourReports, Integer>("daysOld"));
             duplicates.setCellValueFactory(new PropertyValueFactory<YourReports, String>("duplicates"));
             bugSource.setCellValueFactory(new PropertyValueFactory<YourReports, String>("bugSource"));
+            createdBy.setCellValueFactory(new PropertyValueFactory<YourReports, String>("createdBy"));
 
             //Add data inside of table
             yourReportsTable.setItems(yourReportsData);
@@ -235,7 +244,6 @@ public class BugTrackerController implements Initializable
             e.printStackTrace();
             e.getCause();
         }
-
     }
 
     //Adds data to the Team Members Table
@@ -256,14 +264,10 @@ public class BugTrackerController implements Initializable
         String selectAllUsernames = "SELECT " +
                                         "admin_id, " +
                                         "CONCAT(f_name, ' ', l_name), " +
-                                        //"inprogress_issues, " +
-                                        //"completed_issues, " +
-                                        //"closed_issues, " +
                                         "total_assigned, " +
-                                        //"assigned_reports, " +
                                         "total_created " +
-                                        //"created_reports " +
-                                    "FROM users;";
+                                    "FROM users " +
+                                    "ORDER BY admin_id;";
 
         try
         {
@@ -412,22 +416,24 @@ public class BugTrackerController implements Initializable
 
             //Query to retrieve data from bug_reports
             String selectAllBugReports = "SELECT " +
+                                            "id, " +
                                             "name, " +
                                             "priority, " +
                                             "attachments, " +
                                             "status, " +
-                                            "CONCAT(b.f_name, ' ', b.l_name), " +
+                                            "CONCAT(b.f_name, ' ', b.l_name)  AS assigned, " +
                                             "description, " +
                                             "opened_date, " +
-                                            "DATEDIFF(NOW(), opened_date), " +
+                                            "DATEDIFF(NOW(), opened_date) AS days_old, " +
                                             "duplicates, " +
                                             "bug_source, " +
-                                            "CONCAT(a.f_name, ' ', a.l_name) " +
+                                            "CONCAT(a.f_name, ' ', a.l_name) AS creator " +
                                         "FROM bug_reports " +
                                         "INNER JOIN users AS a " +
                                             "ON a.admin_id = bug_reports.created_by " +
                                         "INNER JOIN users AS b " +
-                                            "ON b.admin_id = bug_reports.assigned_to;";
+                                            "ON b.admin_id = bug_reports.assigned_to " +
+                                        "ORDER BY id;";
 
 
             PreparedStatement preparedStatement = connectDB.prepareStatement(selectAllBugReports);
@@ -435,17 +441,18 @@ public class BugTrackerController implements Initializable
 
             while (queryResult.next())
             {
-                bugData.add(new BugsAndIssues( queryResult.getString("name"),
+                bugData.add(new BugsAndIssues( queryResult.getInt("id"),
+                                queryResult.getString("name"),
                                 queryResult.getString("priority"),
                                 queryResult.getString("attachments"),
                                 queryResult.getString("status"),
-                                queryResult.getString("CONCAT(b.f_name, ' ', b.l_name)"),
+                                queryResult.getString("assigned"),
                                 queryResult.getString("description"),
                                 queryResult.getString("opened_date"),
-                                queryResult.getInt("DATEDIFF(NOW(), opened_date)"),
+                                queryResult.getInt("days_old"),
                                 queryResult.getString("duplicates"),
                                 queryResult.getString("bug_source"),
-                                queryResult.getString("CONCAT(a.f_name, ' ', a.l_name)")
+                                queryResult.getString("creator")
                         )
                 );
             }
@@ -476,11 +483,12 @@ public class BugTrackerController implements Initializable
                                             "DATEDIFF(NOW(), opened_date) AS days_old, " +
                                             "duplicates, " +
                                             "bug_source, " +
-                                            "CONCAT(f_name, ' ', l_name) AS created_by " +
+                                            "CONCAT(f_name, ' ', l_name) AS creator " +
                                         "FROM bug_reports " +
                                         "INNER JOIN users " +
                                             "ON users.admin_id = bug_reports.created_by " +
-                                        "WHERE admin_id = " + LoginController.currentUser + ";";
+                                        "WHERE assigned_to = " + LoginController.currentUser +
+                                        " ORDER BY opened_date;";
 
             PreparedStatement preparedStatement = connectDB.prepareStatement(selectAllBugReports);
             ResultSet queryResult = preparedStatement.executeQuery();
@@ -496,7 +504,8 @@ public class BugTrackerController implements Initializable
                                 queryResult.getString("opened_date"),
                                 queryResult.getInt("days_old"),
                                 queryResult.getString("duplicates"),
-                                queryResult.getString("bug_source")
+                                queryResult.getString("bug_source"),
+                                queryResult.getString("creator")
                         )
                 );
             }
@@ -526,7 +535,8 @@ public class BugTrackerController implements Initializable
                                             //"assigned_reports, " +
                                             "total_created " +
                                             //"created_reports " +
-                                        "FROM users;";
+                                        "FROM users " +
+                                        "ORDER BY admin_id;";
 
             PreparedStatement preparedStatement = connectDB.prepareStatement(selectAllUsernames);
             ResultSet queryResult = preparedStatement.executeQuery();

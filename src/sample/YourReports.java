@@ -15,8 +15,9 @@ public class YourReports
     private SimpleIntegerProperty daysOld;
     private SimpleStringProperty duplicates;
     private SimpleStringProperty bugSource;
+    private SimpleStringProperty createdBy;
 
-    public YourReports(int id, String reportName, String priority, String attachments, String status, String description, String openedDate, int daysOld, String duplicates, String bugSource)
+    public YourReports(int id, String reportName, String priority, String attachments, String status, String description, String openedDate, int daysOld, String duplicates, String bugSource, String createdBy)
     {
         this.id = new SimpleIntegerProperty(id);
         this.reportName = new SimpleStringProperty(reportName);
@@ -28,6 +29,7 @@ public class YourReports
         this.daysOld = new SimpleIntegerProperty(daysOld);
         this.duplicates = new SimpleStringProperty(duplicates);
         this.bugSource = new SimpleStringProperty(bugSource);
+        this.createdBy = new SimpleStringProperty(createdBy);
     }
 
     public int getId()
@@ -78,5 +80,10 @@ public class YourReports
     public String getBugSource()
     {
         return bugSource.get();
+    }
+
+    public String getCreatedBy()
+    {
+        return createdBy.get();
     }
 }

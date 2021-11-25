@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class BugsAndIssues
 {
+    private SimpleIntegerProperty id;
     private SimpleStringProperty bugTitle;
     private SimpleStringProperty priority;
     private SimpleStringProperty attachments;   //TODO: Changes type to hold pictures
@@ -17,8 +18,9 @@ public class BugsAndIssues
     private SimpleStringProperty bugSource;
     private SimpleStringProperty createdBy;
 
-    public BugsAndIssues(String bugTitle, String priority, String attachments, String status, String assignedTo, String description, String openedDate, int daysOld, String duplicates, String bugSource, String createdBy)
+    public BugsAndIssues(int id, String bugTitle, String priority, String attachments, String status, String assignedTo, String description, String openedDate, int daysOld, String duplicates, String bugSource, String createdBy)
     {
+        this.id = new SimpleIntegerProperty(id);
         this.bugTitle = new SimpleStringProperty(bugTitle);
         this. priority = new SimpleStringProperty(priority);
         this.attachments = new SimpleStringProperty(attachments);
@@ -30,6 +32,11 @@ public class BugsAndIssues
         this.duplicates = new SimpleStringProperty(duplicates);
         this.bugSource = new SimpleStringProperty(bugSource);
         this.createdBy = new SimpleStringProperty(createdBy);
+    }
+
+    public int getId()
+    {
+        return id.get();
     }
 
     public String getBugTitle()
