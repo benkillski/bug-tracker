@@ -251,14 +251,14 @@ public class BugTrackerController implements Initializable
     {
         TableColumn id = new TableColumn("ID");
         TableColumn name = new TableColumn("Name");
-        TableColumn inprogressIssues = new TableColumn("In-progress Issues");
-        TableColumn completedIssues = new TableColumn("Completed Issues");
-        TableColumn closedIssues = new TableColumn("Closed Issues");
+        //TableColumn inprogressIssues = new TableColumn("In-progress Issues");
+        //TableColumn completedIssues = new TableColumn("Completed Issues");
+        //TableColumn closedIssues = new TableColumn("Closed Issues");
         TableColumn totalAssigned = new TableColumn("Total assigned");
-        TableColumn assignedReports = new TableColumn("Assigned Reports");
+        //TableColumn assignedReports = new TableColumn("Assigned Reports");
         TableColumn totalCreated = new TableColumn("Total Created");
-        TableColumn createdReports = new TableColumn("Created Reports");
-        teamMemberTable.getColumns().addAll(id, name, inprogressIssues, completedIssues, closedIssues, totalAssigned, assignedReports, totalCreated, createdReports);
+        //TableColumn createdReports = new TableColumn("Created Reports");
+        teamMemberTable.getColumns().addAll(id, name, totalAssigned, totalCreated);
 
         //Query to select all rows from the users table
         String selectAllUsernames = "SELECT " +
