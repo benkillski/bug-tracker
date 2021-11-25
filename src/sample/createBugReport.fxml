@@ -39,16 +39,6 @@
                   </Label>
                </children>
             </FlowPane>
-            <FlowPane hgap="10.0" layoutX="310.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <Label text="Status">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <ComboBox fx:id="statusComboBox" prefWidth="150.0" />
-               </children>
-            </FlowPane>
             <FlowPane hgap="10.0" layoutX="10.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0">
                <children>
                   <Label text="Assign to">

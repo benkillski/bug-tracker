@@ -17,8 +17,8 @@ public class CreateBugReportController implements Initializable
     private TextField reportNameTextField;
     @FXML
     private ComboBox priorityComboBox;
-    @FXML
-    private ComboBox statusComboBox;
+    //@FXML
+    //private ComboBox statusComboBox;
     @FXML
     private ComboBox assignToComboBox;
     @FXML
@@ -44,9 +44,6 @@ public class CreateBugReportController implements Initializable
     {
         priorityComboBox.getItems().removeAll(priorityComboBox.getItems());
         priorityComboBox.getItems().addAll("Critical", "High", "Normal", "Low");
-
-        statusComboBox.getItems().removeAll(statusComboBox.getItems());
-        statusComboBox.getItems().addAll("Duplicate", "By design", "Won't fix", "Can't reproduce", "Complete", "In-progress", "Blocked");
 
         initAssignToComboBox();
     }

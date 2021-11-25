@@ -28,6 +28,10 @@ public class BugTrackerController implements Initializable
     @FXML
     private TableView bugsAndIssuesTable;
     @FXML
+    private TableView yourReportsTable;
+    @FXML
+    private Button changeStatusButton;
+    @FXML
     private TextField firstNameTextField;
     @FXML
     private TextField lastNameTextField;
@@ -42,10 +46,22 @@ public class BugTrackerController implements Initializable
     @FXML
     private Label profileInfoErrorMessage;
 
+    private ObservableList<BugsAndIssues> bugData;
+    private ObservableList<YourReports> yourReportsData;
+    private ObservableList<Users> memberData;
+
+    private DatabaseConnection connectNow;
+    private Connection connectDB;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
+        connectNow = new DatabaseConnection();
+        connectDB = connectNow.getConnection();
+
         initBugsAndIssuesTable();
+        initYourReportsTable();
+        changeStatusButton.setDisable(true);
         initTeamMembersTable();
         initProfileTab();
     }
@@ -64,11 +80,7 @@ public class BugTrackerController implements Initializable
         TableColumn duplicates = new TableColumn("Duplicates?");
         TableColumn bugSource = new TableColumn("Bug source");
         TableColumn createdBy = new TableColumn("Created by");
-        //TableColumn notificationStatus = new TableColumn("Notification status");
         bugsAndIssuesTable.getColumns().addAll(bugTitle, priority, attachments, status, assignedTo, description, openedDate, daysOld, duplicates, bugSource, createdBy);
-
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection connectDB = connectNow.getConnection();
 
         //Query to retrieve data from bug_reports
         String selectAllBugReports = "SELECT " +
@@ -95,10 +107,10 @@ public class BugTrackerController implements Initializable
             ResultSet queryResult = statement.executeQuery(selectAllBugReports);
 
             //Define data in an ObservableList and add data from query as you want to show inside table
-            final ObservableList<BugsAndIssues> data = FXCollections.observableArrayList();
+            bugData = FXCollections.observableArrayList();
             while (queryResult.next())
             {
-                data.add(new BugsAndIssues( queryResult.getString("name"),
+                bugData.add(new BugsAndIssues( queryResult.getString("name"),
                                             queryResult.getString("priority"),
                                             queryResult.getString("attachments"),
                                             queryResult.getString("status"),
@@ -126,7 +138,7 @@ public class BugTrackerController implements Initializable
                 createdBy.setCellValueFactory(new PropertyValueFactory<BugsAndIssues, String>("createdBy"));
 
                 //Add data inside of table
-                bugsAndIssuesTable.setItems(data);
+                bugsAndIssuesTable.setItems(bugData);
             }
         }
         catch (Exception e)
@@ -134,6 +146,98 @@ public class BugTrackerController implements Initializable
             e.printStackTrace();
             e.getCause();
         }
+    }
+
+    //Adds data to the Your Reports Table
+    public void initYourReportsTable()
+    {
+        TableColumn reportId = new TableColumn("ID");
+        TableColumn reportName = new TableColumn("Title");
+        TableColumn priority = new TableColumn("Priority");
+        TableColumn attachments = new TableColumn("Attachments");
+        TableColumn status = new TableColumn("Status");
+        TableColumn description = new TableColumn("Description");
+        TableColumn openedDate = new TableColumn("Opened date");
+        TableColumn daysOld = new TableColumn("Days old");
+        TableColumn duplicates = new TableColumn("Duplicates?");
+        TableColumn bugSource = new TableColumn("Bug source");
+        yourReportsTable.getColumns().addAll(reportId, reportName, priority, attachments, status, description, openedDate, daysOld, duplicates, bugSource);
+
+        //Listener to enable/disable the Change status button based on if a row has been selected or not
+        yourReportsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null)
+            {
+                changeStatusButton.setDisable(false);
+                changeStatusButton.setOpacity(1);
+            }
+            else
+            {
+                changeStatusButton.setDisable(true);
+                changeStatusButton.setOpacity(0.5);
+            }
+        });
+
+        String selectAllBugReports = "SELECT " +
+                                        "id, " +
+                                        "name, " +
+                                        "priority, " +
+                                        "attachments, " +
+                                        "status, " +
+                                        "description, " +
+                                        "opened_date, " +
+                                        "DATEDIFF(NOW(), opened_date) AS days_old, " +
+                                        "duplicates, " +
+                                        "bug_source, " +
+                                        "CONCAT(f_name, ' ', l_name) AS created_by " +
+                                    "FROM bug_reports " +
+                                    "INNER JOIN users " +
+                                        "ON users.admin_id = bug_reports.created_by " +
+                                    "WHERE admin_id = " + LoginController.currentUser + ";";
+
+        try
+        {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(selectAllBugReports);
+
+            //Define data in an ObservableList and add data from query as you want to show inside table
+            yourReportsData = FXCollections.observableArrayList();
+            while (queryResult.next())
+            {
+                yourReportsData.add(new YourReports( queryResult.getInt("id"),
+                                queryResult.getString("name"),
+                                queryResult.getString("priority"),
+                                queryResult.getString("attachments"),
+                                queryResult.getString("status"),
+                                queryResult.getString("description"),
+                                queryResult.getString("opened_date"),
+                                queryResult.getInt("days_old"),
+                                queryResult.getString("duplicates"),
+                                queryResult.getString("bug_source")
+                        )
+                );
+            }
+
+            //Associate data with columns
+            reportId.setCellValueFactory(new PropertyValueFactory<YourReports, Integer>("id"));
+            reportName.setCellValueFactory(new PropertyValueFactory<YourReports, String>("reportName"));
+            priority.setCellValueFactory(new PropertyValueFactory<YourReports, String>("priority"));
+            attachments.setCellValueFactory(new PropertyValueFactory<YourReports, String>("attachments"));
+            status.setCellValueFactory(new PropertyValueFactory<YourReports, String>("status"));
+            description.setCellValueFactory(new PropertyValueFactory<YourReports, String>("description"));
+            openedDate.setCellValueFactory(new PropertyValueFactory<YourReports, String>("openedDate"));
+            daysOld.setCellValueFactory(new PropertyValueFactory<YourReports, Integer>("daysOld"));
+            duplicates.setCellValueFactory(new PropertyValueFactory<YourReports, String>("duplicates"));
+            bugSource.setCellValueFactory(new PropertyValueFactory<YourReports, String>("bugSource"));
+
+            //Add data inside of table
+            yourReportsTable.setItems(yourReportsData);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            e.getCause();
+        }
+
     }
 
     //Adds data to the Team Members Table
@@ -149,10 +253,6 @@ public class BugTrackerController implements Initializable
         TableColumn totalCreated = new TableColumn("Total Created");
         TableColumn createdReports = new TableColumn("Created Reports");
         teamMemberTable.getColumns().addAll(id, name, inprogressIssues, completedIssues, closedIssues, totalAssigned, assignedReports, totalCreated, createdReports);
-
-        //Connects to database
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection connectDB = connectNow.getConnection();
 
         //Query to select all rows from the users table
         String selectAllUsernames = "SELECT " +
@@ -173,10 +273,10 @@ public class BugTrackerController implements Initializable
             ResultSet queryResult = statement.executeQuery(selectAllUsernames);
 
             //Define data in an ObservableList and add data from query as you want to show inside table
-            final ObservableList<Users> data = FXCollections.observableArrayList();
+            memberData = FXCollections.observableArrayList();
             while(queryResult.next())
             {
-                data.add(new Users( queryResult.getInt("admin_id"),
+                memberData.add(new Users( queryResult.getInt("admin_id"),
                                     queryResult.getString("CONCAT(f_name, ' ', l_name)"),
                                     queryResult.getInt("total_assigned"),
                                     queryResult.getInt("total_created")
@@ -191,7 +291,7 @@ public class BugTrackerController implements Initializable
             totalCreated.setCellValueFactory(new PropertyValueFactory<Users, Integer>("totalCreated"));
 
             //Add data inside of table
-            teamMemberTable.setItems(data);
+            teamMemberTable.setItems(memberData);
 
         }
         catch(Exception e)
@@ -203,9 +303,6 @@ public class BugTrackerController implements Initializable
 
     public void initProfileTab()
     {
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection connectDB = connectNow.getConnection();
-
         String selectCurrentUserInfo = "SELECT f_name, l_name, username, password FROM users WHERE admin_id = " + LoginController.currentUser + ";";
 
         try
@@ -245,6 +342,27 @@ public class BugTrackerController implements Initializable
         popupWindow.show();
     }
 
+    //Creates a popup window to change the status of a selected report
+    public void changeStatusOnAction(ActionEvent event) throws IOException
+    {
+        Stage popupWindow = new Stage();
+
+        popupWindow.initModality(Modality.APPLICATION_MODAL);
+        popupWindow.setResizable(false);
+        popupWindow.setTitle("Change Status");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("changeStatus.fxml"));
+        Parent root = loader.load();
+
+        ChangeStatusController changeStatusController = loader.getController();
+        changeStatusController.selectRow(yourReportsTable.getSelectionModel().getSelectedItems());
+        changeStatusController.initChangeStatusWindowElements();
+
+        Scene scene = new Scene(root);
+        popupWindow.setScene(scene);
+        popupWindow.show();
+    }
+
     //Saves profile changes into database
     public void saveProfileChangesOnActions(ActionEvent event) throws IOException
     {
@@ -273,11 +391,5 @@ public class BugTrackerController implements Initializable
             e.printStackTrace();
             e.getCause();
         }
-    }
-
-    public void updateTables()
-    {
-        teamMemberTable.refresh();
-        bugsAndIssuesTable.refresh();
     }
 }
