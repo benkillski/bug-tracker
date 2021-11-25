@@ -13,6 +13,8 @@ import java.util.ResourceBundle;
 
 public class CreateBugReportController implements Initializable
 {
+    private BugTrackerController bugTrackerController;
+
     @FXML
     private TextField reportNameTextField;
     @FXML
@@ -111,6 +113,7 @@ public class CreateBugReportController implements Initializable
                 statement.executeUpdate(insertIntoCreated);
                 statement.executeUpdate(updateUsersTotalAssigned);
                 statement.executeUpdate(updateUsersTotalCreated);
+                bugTrackerController.updateTables();
                 Stage stage = (Stage) createReportButton.getScene().getWindow();
                 stage.close();
             }
@@ -120,5 +123,10 @@ public class CreateBugReportController implements Initializable
             e.printStackTrace();
             e.getCause();
         }
+    }
+
+    public void setBugTrackerController(BugTrackerController controller)
+    {
+        bugTrackerController = controller;
     }
 }

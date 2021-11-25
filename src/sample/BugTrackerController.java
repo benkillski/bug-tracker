@@ -15,9 +15,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ResourceBundle;
 
 
@@ -336,7 +334,12 @@ public class BugTrackerController implements Initializable
         popupWindow.setResizable(false);
         popupWindow.setTitle("Report Bug");
 
-        Parent root = FXMLLoader.load(getClass().getResource("createBugReport.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("createBugReport.fxml"));
+        Parent root = loader.load();
+
+        CreateBugReportController createBugReportController = loader.getController();
+        createBugReportController.setBugTrackerController(this);
+
         Scene scene = new Scene(root);
         popupWindow.setScene(scene);
         popupWindow.show();
@@ -356,6 +359,7 @@ public class BugTrackerController implements Initializable
 
         ChangeStatusController changeStatusController = loader.getController();
         changeStatusController.selectRow(yourReportsTable.getSelectionModel().getSelectedItems());
+        changeStatusController.setBugTrackerController(this);
         changeStatusController.initChangeStatusWindowElements();
 
         Scene scene = new Scene(root);
@@ -385,6 +389,158 @@ public class BugTrackerController implements Initializable
             {
                 profileInfoErrorMessage.setText("Firstname, Lastname, Username, and Password fields cannot be blank! Password fields must also match!");
             }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            e.getCause();
+        }
+    }
+
+    public void updateTables()
+    {
+        updateBugsAndIssuesTable();
+        updateYourReportsTable();
+        updateTeamMembersTable();
+    }
+
+    private void updateBugsAndIssuesTable()
+    {
+        try
+        {
+            bugData.clear();
+
+            //Query to retrieve data from bug_reports
+            String selectAllBugReports = "SELECT " +
+                                            "name, " +
+                                            "priority, " +
+                                            "attachments, " +
+                                            "status, " +
+                                            "CONCAT(b.f_name, ' ', b.l_name), " +
+                                            "description, " +
+                                            "opened_date, " +
+                                            "DATEDIFF(NOW(), opened_date), " +
+                                            "duplicates, " +
+                                            "bug_source, " +
+                                            "CONCAT(a.f_name, ' ', a.l_name) " +
+                                        "FROM bug_reports " +
+                                        "INNER JOIN users AS a " +
+                                            "ON a.admin_id = bug_reports.created_by " +
+                                        "INNER JOIN users AS b " +
+                                            "ON b.admin_id = bug_reports.assigned_to;";
+
+
+            PreparedStatement preparedStatement = connectDB.prepareStatement(selectAllBugReports);
+            ResultSet queryResult = preparedStatement.executeQuery();
+
+            while (queryResult.next())
+            {
+                bugData.add(new BugsAndIssues( queryResult.getString("name"),
+                                queryResult.getString("priority"),
+                                queryResult.getString("attachments"),
+                                queryResult.getString("status"),
+                                queryResult.getString("CONCAT(b.f_name, ' ', b.l_name)"),
+                                queryResult.getString("description"),
+                                queryResult.getString("opened_date"),
+                                queryResult.getInt("DATEDIFF(NOW(), opened_date)"),
+                                queryResult.getString("duplicates"),
+                                queryResult.getString("bug_source"),
+                                queryResult.getString("CONCAT(a.f_name, ' ', a.l_name)")
+                        )
+                );
+            }
+            bugsAndIssuesTable.setItems(bugData);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            e.getCause();
+        }
+    }
+
+    private void updateYourReportsTable()
+    {
+        try
+        {
+            yourReportsData.clear();
+
+            String selectAllBugReports = "SELECT " +
+                                            "id, " +
+                                            "name, " +
+                                            "priority, " +
+                                            "attachments, " +
+                                            "status, " +
+                                            "description, " +
+                                            "opened_date, " +
+                                            "DATEDIFF(NOW(), opened_date) AS days_old, " +
+                                            "duplicates, " +
+                                            "bug_source, " +
+                                            "CONCAT(f_name, ' ', l_name) AS created_by " +
+                                        "FROM bug_reports " +
+                                        "INNER JOIN users " +
+                                            "ON users.admin_id = bug_reports.created_by " +
+                                        "WHERE admin_id = " + LoginController.currentUser + ";";
+
+            PreparedStatement preparedStatement = connectDB.prepareStatement(selectAllBugReports);
+            ResultSet queryResult = preparedStatement.executeQuery();
+
+            while (queryResult.next())
+            {
+                yourReportsData.add(new YourReports( queryResult.getInt("id"),
+                                queryResult.getString("name"),
+                                queryResult.getString("priority"),
+                                queryResult.getString("attachments"),
+                                queryResult.getString("status"),
+                                queryResult.getString("description"),
+                                queryResult.getString("opened_date"),
+                                queryResult.getInt("days_old"),
+                                queryResult.getString("duplicates"),
+                                queryResult.getString("bug_source")
+                        )
+                );
+            }
+            yourReportsTable.setItems(yourReportsData);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            e.getCause();
+        }
+    }
+
+    private void updateTeamMembersTable()
+    {
+        try
+        {
+            memberData.clear();
+
+            String selectAllUsernames = "SELECT " +
+                                            "admin_id, " +
+                                            "CONCAT(f_name, ' ', l_name), " +
+                                            //"inprogress_issues, " +
+                                            //"completed_issues, " +
+                                            //"closed_issues, " +
+                                            "total_assigned, " +
+                                            //"assigned_reports, " +
+                                            "total_created " +
+                                            //"created_reports " +
+                                        "FROM users;";
+
+            PreparedStatement preparedStatement = connectDB.prepareStatement(selectAllUsernames);
+            ResultSet queryResult = preparedStatement.executeQuery();
+
+            while (queryResult.next())
+            {
+                memberData.add(new Users( queryResult.getInt("admin_id"),
+                                queryResult.getString("CONCAT(f_name, ' ', l_name)"),
+                                queryResult.getInt("total_assigned"),
+                                queryResult.getInt("total_created")
+                        )
+                );
+            }
+            teamMemberTable.setItems(memberData);
         }
         catch (Exception e)
         {

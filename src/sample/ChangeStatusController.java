@@ -17,6 +17,8 @@ import java.util.ResourceBundle;
 
 public class ChangeStatusController implements Initializable
 {
+    private BugTrackerController bugTrackerController;
+
     private ObservableList<YourReports> selectedReportRow;
 
     @FXML
@@ -61,7 +63,7 @@ public class ChangeStatusController implements Initializable
 
     public void changeReportStatusOnAction(ActionEvent event) throws IOException
     {
-        String updateReportStatus = "UPDATE bug_reports SET status = '" + newStatusComboBox.getValue().toString() + "' WHERE id = " + selectedReportRow.get(0).getId() + ";";
+        String updateReportStatus = "UPDATE bug_reports SET status = \"" + newStatusComboBox.getValue().toString() + "\" WHERE id = " + selectedReportRow.get(0).getId() + ";";
 
         try
         {
@@ -69,6 +71,7 @@ public class ChangeStatusController implements Initializable
             statement.executeUpdate(updateReportStatus);
 
             Stage stage = (Stage) bugReportTitleLabel.getScene().getWindow();
+            bugTrackerController.updateTables();
             stage.close();
         }
         catch (Exception e)
@@ -81,5 +84,10 @@ public class ChangeStatusController implements Initializable
     public void selectRow(ObservableList<YourReports> row)
     {
         selectedReportRow = row;
+    }
+
+    public void setBugTrackerController(BugTrackerController controller)
+    {
+        bugTrackerController = controller;
     }
 }
