@@ -11,7 +11,7 @@ public class DatabaseConnection
     {
         String databaseName = "bug_tracker";
         String databaseUser = "root";
-        String databasePassword = "Lacrosse123$";
+        String databasePassword = "";
         String url = "jdbc:mysql://localhost/" + databaseName;
 
         try
