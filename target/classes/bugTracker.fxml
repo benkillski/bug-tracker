@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.BugTrackerController">
+   <children>
+      <TabPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1000.0" side="LEFT" tabClosingPolicy="UNAVAILABLE" tabMinHeight="100.0" tabMinWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <tabs>
+            <Tab closable="false">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: navy;">
+                     <children>
+                        <Label alignment="CENTER" text="Bugs and Issues" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="bugsAndIssuesTable" fixedCellSize="100.0" prefHeight="571.0" prefWidth="1000.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                        <Button mnemonicParsing="false" onAction="#reportBugOnAction" style="-fx-background-color: green;" text="Report Bug" textFill="WHITE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </content>
+               <graphic>
+                  <Label text="Bugs and Issues">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </graphic>
+            </Tab>
+            <Tab closable="false">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: navy;">
+                     <children>
+                        <Label alignment="CENTER" text="Your Reports" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="yourReportsTable" fixedCellSize="100.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                        <Button fx:id="changeStatusButton" mnemonicParsing="false" onAction="#changeStatusOnAction" style="-fx-background-color: green;" text="Change Status" textFill="WHITE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Button>
+                     </children></AnchorPane>
+               </content>
+               <graphic>
+                  <Label text="Your Reports">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </graphic>
+            </Tab>
+            <Tab closable="false">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: navy;">
+                     <children>
+                        <Label alignment="CENTER" text="Team Members" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="teamMemberTable" fixedCellSize="100.0" layoutY="6.0" prefHeight="571.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+               <graphic>
+                  <Label text="Team Members">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </graphic>
+            </Tab>
+            <Tab closable="false" onSelectionChanged="#initProfileTab">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label alignment="CENTER" layoutY="-5.0" prefHeight="45.0" prefWidth="893.0" style="-fx-background-color: navy;" text="Profile" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-5.0">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <TilePane prefColumns="2" prefHeight="200.0" prefRows="3" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+                           <children>
+                              <FlowPane hgap="20.0" prefHeight="200.0" rowValignment="TOP">
+                                 <children>
+                                    <Label text="Firstname">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="firstNameTextField" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" top="20.0" />
+                                 </padding>
+                              </FlowPane>
+                              <FlowPane hgap="20.0" layoutX="10.0" layoutY="10.0" prefHeight="200.0" rowValignment="TOP">
+                                 <children>
+                                    <Label text="Lastname">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="lastNameTextField" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" top="20.0" />
+                                 </padding>
+                              </FlowPane>
+                              <FlowPane hgap="20.0" layoutX="430.0" layoutY="10.0" prefHeight="200.0" rowValignment="TOP">
+                                 <children>
+                                    <Label text="ID Number:">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="idNumberLabel" layoutX="30.0" layoutY="30.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" top="20.0" />
+                                 </padding>
+                              </FlowPane>
+                              <FlowPane hgap="20.0" layoutX="10.0" layoutY="210.0" prefHeight="200.0" rowValignment="TOP">
+                                 <children>
+                                    <Label text="Username">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="usernameTextField" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" top="20.0" />
+                                 </padding>
+                              </FlowPane>
+                              <FlowPane hgap="20.0" layoutX="430.0" layoutY="210.0" prefHeight="200.0" rowValignment="TOP">
+                                 <children>
+                                    <Label text="Password">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <PasswordField fx:id="passwordField" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" top="20.0" />
+                                 </padding>
+                              </FlowPane>
+                              <FlowPane hgap="20.0" layoutX="10.0" layoutY="410.0" prefHeight="200.0" rowValignment="TOP">
+                                 <children>
+                                    <Label text="Confirm password">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <PasswordField fx:id="confirmPasswordField" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" top="20.0" />
+                                 </padding>
+                              </FlowPane>
+                           </children>
+                        </TilePane>
+                        <Label fx:id="profileInfoErrorMessage" alignment="CENTER" textAlignment="CENTER" textFill="RED" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <Button mnemonicParsing="false" onAction="#saveProfileChangesOnActions" style="-fx-background-color: green;" text="Save Changes" textFill="WHITE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Button>
+                     </children></AnchorPane>
+               </content>
+               <graphic>
+                  <Label text="Profile">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </graphic>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

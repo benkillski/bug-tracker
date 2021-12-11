@@ -1,0 +1,115 @@
+# Users Schema
+CREATE TABLE users (
+	admin_id INT AUTO_INCREMENT PRIMARY KEY,
+	username VARCHAR(255) UNIQUE NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	f_name VARCHAR(255),
+	l_name VARCHAR(255),
+	total_assigned INT DEFAULT 0,
+	total_created INT DEFAULT 0
+);
+
+ALTER TABLE users AUTO_INCREMENT = 1000;
+
+
+
+# bug_reports Schema
+CREATE TABLE bug_reports (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	priority VARCHAR(255) NOT NULL,
+	attachments VARCHAR(255),
+	status VARCHAR(255),
+	assigned_to INT,
+	description VARCHAR(255),
+	opened_date TIMESTAMP DEFAULT NOW(),
+	duplicates VARCHAR(255),
+	bug_source VARCHAR(255),
+	created_by INT,
+	FOREIGN KEY (assigned_to) REFERENCES users(admin_id),
+	FOREIGN KEY (created_by) REFERENCES users(admin_id)
+);
+
+ALTER TABLE bug_reports AUTO_INCREMENT = 1000;
+
+
+
+# Inprogress reports schema
+CREATE TABLE inprogress_issues (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	report_title VARCHAR(255) NOT NULL,
+	assigned_to INT,
+	FOREIGN KEY (assigned_to) REFERENCES users(admin_id)
+);
+
+
+
+# Completed reports schema
+CREATE TABLE completed_issues (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	report_title VARCHAR(255) NOT NULL,
+	assigned_to INT,
+	FOREIGN KEY (assigned_to) REFERENCES users(admin_id)
+);
+
+
+
+# Closed reports schema
+CREATE TABLE closed_issues (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	report_title VARCHAR(255) NOT NULL,
+	assigned_to INT, 
+	FOREIGN KEY (assigned_to) REFERENCES users(admin_id)
+);
+
+
+
+# Assigned reports schema
+CREATE TABLE assigned_reports (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	report_title VARCHAR(255) NOT NULL,
+	assigned_to INT, 
+	FOREIGN KEY (assigned_to) REFERENCES users(admin_id)
+);
+
+
+
+# Created reports schema
+CREATE TABLE created_reports (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	report_title VARCHAR(255) NOT NULL,
+	created_by INT, 
+	FOREIGN KEY (assigned_to) REFERENCES users(admin_id)
+);
+
+
+
+# Test user data
+INSERT INTO users (username, password, f_name, l_name)
+VALUES  ('benfrank', 'I', 'ben', 'franklin'),
+	('georgewash', 'Like', 'george', 'washington'),
+	('tomjeff', 'Pineapple', 'thomas', 'jefferson'),
+	('benkilski', 'Pizza', 'ben', 'kilkowski');
+
+# Test report 1
+INSERT INTO bug_reports (name, priority, status, assigned_to, description, bug_source, created_by)
+VALUES ('infinite loop', 'high', 'in-progress', 1000, 'Gets stuck in inifinite loop when refresh button is pressed', 'pressing refresh button', 1001);
+
+# Test report 2
+INSERT INTO bug_reports (name, priority, status, assigned_to, description, bug_source, created_by, opened_date)
+VALUES ('Crash', 'critical', 'in-progress', 1001, 'Crashes when search button is pressed', 'pressing search button', 1002, '2020-11-05 16:25:34');
+
+# Test report 3
+INSERT INTO bug_reports (name, priority, status, assigned_to, description, bug_source, created_by, opened_date)
+VALUES ('Data not updating', 'normal', 'completed', 1003, 'Database data isn\'t updating after pressing the submit button.', 'pressing the submit button.', 1000, '2021-11-05 12:37:12');
+
+# Test report 4
+INSERT INTO bug_reports (name, priority, status, assigned_to, description, bug_source, created_by, opened_date)
+VALUES ('Images arent displaying', 'normal', 'wont fix', 1002, 'Outline of image shows but within the image is blank and white.', 'Having too many tabs opened at once', 1003, NOW());
+
+#Update counters for users
+UPDATE users SET total_assigned = 1;
+UPDATE users SET total_created = 1;
+
+
+
